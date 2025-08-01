@@ -5,6 +5,7 @@ metadata:
   labels:
     app: crapi-web
 spec:
+  loadBalancerSourceRanges: "196.12.3.0/24"
   ports:
   - port: 80
     nodePort: 30080

@@ -16,12 +16,62 @@ spec:
         - name: wait-for-crapi-identity
           image: groundnuty/k8s-wait-for:v1.3
           imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+    
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+    
+          securityContext:
+            runAsUser: 10000         # <- Here is your update
+            runAsGroup: 3000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
           args:
             - "service"
             - "crapi-identity"
         - name: wait-for-crapi-community
           image: groundnuty/k8s-wait-for:v1.3
           imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+    
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+          securityContext:
+            runAsUser: 10000         # <- Here is your update
+            runAsGroup: 3000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+        readOnlyRootFilesystem: true
           args:
             - "service"
             - "crapi-community"
@@ -34,11 +84,36 @@ spec:
         envFrom:
             - configMapRef:
                 name: crapi-workshop-configmap
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 3
+  
         resources:
-          limits:
-            cpu: "256m"
           requests:
-            cpu: 256m
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
+        securityContext:
+          runAsUser: 10000         # <- Here is your update
+          runAsGroup: 3000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+          resources:
+            limits:
+              cpu: "256m"
+            requests:
+              cpu: 256m
         readinessProbe:
           tcpSocket:
             port: 8000
